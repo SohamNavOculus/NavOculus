@@ -1,0 +1,35 @@
+name: NavOculus Android Build
+
+on:
+  push:
+    branches:
+      - main  # Change to your primary branch if needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # GitHub-hosted runner
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'  # Alternative: adopt, temurin
+          java-version: 11  # Ensure this matches your project
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Grant Gradle Execution Permission
+        run: chmod +x ./gradlew
+
+      - name: Build APK
+        run: ./gradlew assembleDebug  # Use assembleRelease for production
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: NavOculus-APK
+          path: app/build/outputs/apk/debug/*.apk
